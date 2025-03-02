@@ -27,9 +27,37 @@ class GameSprite(pygame.sprite.Sprite) :
     def reset(self, window):
         window.blit(self. image, self. rect)
 
-player = GameSprite("hero.png",(75,75), (50, HEIGHT-50), 5)
-enemy = GameSprite("cyborg.png",(75,75), (-150, HEIGHT//2), 5)
-gold = GameSprite("hero.png",(75,75), (50, HEIGHT-50), 5)
+class Player (GameSprite):
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w] and self.rect.y > 0:
+            self.rect.y -= self.speed
+
+        if keys[pygame.K_s] and self.rect.y < HEIGHT :
+            self.rect.y += self.speed
+
+        if keys[pygame.K_d] and self.rect.x < WIDTH :
+            self.rect.x += self.speed
+
+        if keys[pygame.K_a] and self.rect.x > 0:
+            self.rect.x -= self.speed
+
+
+class Enemy(GameSprite):
+    def update(self, x1:int, x2:int):
+        self.rect.x += self.speed
+        if self.rect.x >= x2 or self.rect.x <= x1:
+            self.speed = -self.speed
+
+
+        
+
+        
+          
+
+player = Player("hero.png",(75,75), (50, HEIGHT-50), 5)
+enemy = Enemy("cyborg.png",(75,75), (WIDTH-250, HEIGHT//2), 5)
+gold = GameSprite("treasure.png",(75,75), (WIDTH-150, HEIGHT-50), 5)
 game = True
 while game:
     for event in pygame.event.get():
@@ -38,7 +66,9 @@ while game:
 
 
     window.blit(backgound, (0,0))
+    player.update()
     player.reset(window)
+    enemy.update(700, WIDTH-200)
     enemy.reset(window)
     gold.reset(window)
 
